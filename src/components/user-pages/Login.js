@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
     constructor(props){
@@ -40,9 +41,13 @@ class Login extends Component {
 
 
     render(){
+        // check if currentUser exists and if so, redirect to some other page
+        if(this.props.currentUser){
+            return <Redirect to="/" />
+        }
         return (
             <section>
-                <h2> Login </h2>
+                <h2> Log In </h2>
                 <form onSubmit={event => this.handleSubmit(event)}>
                     <label> Email </label>
                     <input 

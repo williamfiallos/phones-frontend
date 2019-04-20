@@ -10,6 +10,7 @@ import Login from './components/user-pages/Login';
 import Home from './components/Home';
 
 import AddPhone from './components/phone-pages/AddPhone';
+import PhoneList from './components/phone-pages/PhoneList';
 
 
 class App extends Component {
@@ -33,7 +34,13 @@ class App extends Component {
     this.setState({ currentUser: userPlaceholder });
   }
 
-
+  logout(){
+    axios.delete(
+      "http://localhost:3001/api/logout", { withCredentials: true }
+    )
+    .then( () => this.syncCurrentUser(null))
+    .catch( err => console.log(err) )
+  }
 
 
   render() {
@@ -44,9 +51,16 @@ class App extends Component {
           <nav>
             {/* Home will be always visible to everyone */}
             <NavLink to="/"> Home </NavLink>
+            <NavLink to="/phone-list"> Phone List </NavLink>
+
+
             { this.state.currentUser ? (
               // these pages will be visible only if the user exists
-                <NavLink to="/add-phone"> Add a Phone </NavLink>
+                // notice the <span> wrapper since in React each component to render needs to be wrapped by a parent
+                <span> 
+                  <NavLink to="/add-phone"> Add a Phone </NavLink>
+                  <button onClick={ () => this.logout }> Log Out </button>
+                </span>
             ) : (
               // these pages will be visible only if there is no user in the session
               <span>
@@ -83,7 +97,11 @@ class App extends Component {
                 onUserChange={ userDoc => this.syncCurrentUser(userDoc) } />
             } />
 
-            <Route path="/add-phone" component={ AddPhone } />
+            {/* change this route below to prevent users to access the routes when they are not logged in,
+            we are passing currentUser into the component so we can check there whether it's available or not */}
+            {/* <Route path="/add-phone" component={ AddPhone } /> */}
+            <Route path="/add-phone" render={ () => <AddPhone currentUser={ this.state.currentUser }  /> }/>
+            <Route path="/phone-list" component={ PhoneList } />
 
                       {/* props. first prop to send from mother to child; sencond prop is from child to mother */}
             {/* <Signup currentUser={ this.state.currentUser } 

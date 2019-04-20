@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 class AddPhone extends Component {
     constructor(props){
@@ -62,6 +63,13 @@ class AddPhone extends Component {
 
 
     render(){
+        if(!this.props.currentUser){
+            return <Redirect to="/login-page" />
+        }
+        
+        if(this.state.isSubmitSuccessful){
+            return <Redirect to="/phone-list" />
+        }
         return(
             <section>
                 <h2> Add a Phone </h2>
@@ -100,6 +108,10 @@ class AddPhone extends Component {
                         type = "file"
                     />
                     <br />
+                    
+                    {/* if you want to show on the site the image of the phone once uploaded: */}
+                    <img width="200" src={ this.state.image } />
+
                     <label> Specs: </label>
                     <br />
                     <small> Has to be 3 letters at least </small>

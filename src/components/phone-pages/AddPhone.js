@@ -21,7 +21,19 @@ class AddPhone extends Component {
     }
 
     uploadImage(event){
-        console.log("upload image: ", event.target)
+        // console.log("upload image: ", event.target)
+        const { files } = event.target;
+        const uploadData = new FormData();
+
+        uploadData.append("submittedFile", files[0]);
+
+        axios.post(
+            "http://localhost:3001/api/upload-file",
+            uploadData,
+            { withCredentials: true }
+        )
+        .then( response => this.setState({ image:response.data.fileUrl }))
+        .catch( err => console.log(err) );
     }
 
     syncSpec(event, index){
@@ -83,8 +95,8 @@ class AddPhone extends Component {
                     />
                     <label> Image: </label>
                     <input 
-                        // onChange is standard, must use. Note "event" can be also "e"
-                        onChange = { e => this.genericSync(e) }
+                        // onChange is standard, but note for IMAGE it is UPLOADIMAGE!! Note "event" can be also "e"
+                        onChange = { e => this.uploadImage(e) }
                         type = "file"
                     />
                     <br />
